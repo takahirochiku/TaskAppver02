@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        mEditText = (EditText) findViewById(R.id.editText);
+        //mEditText = (EditText) findViewById(R.id.editText);
 
         // Realmの設定
         mRealm = Realm.getDefaultInstance();
