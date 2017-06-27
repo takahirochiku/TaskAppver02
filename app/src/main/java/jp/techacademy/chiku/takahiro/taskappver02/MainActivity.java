@@ -9,6 +9,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
@@ -16,6 +17,7 @@ import java.util.Date;
 
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
+import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
@@ -33,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private ListView mListView;
     private TaskAdapter mTaskAdapter;
     private EditText mEditText;
+    private Button mSearchButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +51,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //mEditText = (EditText) findViewById(R.id.editText);
-
         // Realmの設定
         mRealm = Realm.getDefaultInstance();
         mRealm.addChangeListener(mRealmListener);
@@ -57,6 +58,26 @@ public class MainActivity extends AppCompatActivity {
         // ListViewの設定
         mTaskAdapter = new TaskAdapter(MainActivity.this);
         mListView = (ListView) findViewById(R.id.listView1);
+
+        mEditText = (EditText) findViewById(R.id.search_editText);
+        mSearchButton = (Button) findViewById(R.id.search_button);
+
+        //検索時の処理
+        mSearchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mEditText == null) {
+                    reloadListView();
+                } else {
+                    RealmQuery<Task> query = mRealm.where(Task.class);
+                    query.equalTo("category", "mEditText");
+                    RealmResults<Task> result1 = query.findAll();
+                    mTaskAdapter.setTaskList(mRealm.copyFromRealm(result1));
+                    mListView.setAdapter(mTaskAdapter);
+                    mTaskAdapter.notifyDataSetChanged();
+                }
+            }
+        });
 
         // ListViewをタップしたときの処理
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
