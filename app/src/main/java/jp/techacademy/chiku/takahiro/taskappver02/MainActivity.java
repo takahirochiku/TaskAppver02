@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private TaskAdapter mTaskAdapter;
     private EditText mEditText;
     private Button mSearchButton;
+    String searchWord;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,21 +61,24 @@ public class MainActivity extends AppCompatActivity {
         mListView = (ListView) findViewById(R.id.listView1);
 
         mEditText = (EditText) findViewById(R.id.search_editText);
+        searchWord = mEditText.getText().toString();
         mSearchButton = (Button) findViewById(R.id.search_button);
 
         //検索時の処理
-        mSearchButton.setOnClickListener(new View.OnClickListener() {
+       mSearchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mEditText == null) {
-                    reloadListView();
-                } else {
-                    RealmQuery<Task> query = mRealm.where(Task.class);
-                    query.equalTo("category", "mEditText");
-                    RealmResults<Task> result1 = query.findAll();
-                    mTaskAdapter.setTaskList(mRealm.copyFromRealm(result1));
-                    mListView.setAdapter(mTaskAdapter);
-                    mTaskAdapter.notifyDataSetChanged();
+                if (v.getId() == R.id.search_button) {
+                    if(mEditText != null){
+                        RealmQuery<Task> query = mRealm.where(Task.class);
+                        query.equalTo("category", searchWord);
+                        RealmResults<Task> result1 = query.findAll();
+                        mTaskAdapter.setTaskList(mRealm.copyFromRealm(result1));
+                        mListView.setAdapter(mTaskAdapter);
+                        mTaskAdapter.notifyDataSetChanged();
+                    }else{
+                        reloadListView();
+                    }
                 }
             }
         });
