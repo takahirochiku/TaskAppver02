@@ -7,6 +7,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -36,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private TaskAdapter mTaskAdapter;
     private EditText mEditText;
     private Button mSearchButton;
-    String searchWord;
+    //String searchWord;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         mListView = (ListView) findViewById(R.id.listView1);
 
         mEditText = (EditText) findViewById(R.id.search_editText);
-        searchWord = mEditText.getText().toString();
+        //searchWord = mEditText.getText().toString();
         mSearchButton = (Button) findViewById(R.id.search_button);
 
         //検索時の処理
@@ -69,9 +70,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (v.getId() == R.id.search_button) {
-                    if(mEditText != null){
+                    if(mEditText.length() != 0){
                         RealmQuery<Task> query = mRealm.where(Task.class);
-                        query.equalTo("category", searchWord);
+                        query.equalTo("category", mEditText.getText().toString());
                         RealmResults<Task> result1 = query.findAll();
                         mTaskAdapter.setTaskList(mRealm.copyFromRealm(result1));
                         mListView.setAdapter(mTaskAdapter);
@@ -79,8 +80,8 @@ public class MainActivity extends AppCompatActivity {
                     }else{
                         reloadListView();
                     }
+                    }
                 }
-            }
         });
 
         // ListViewをタップしたときの処理
